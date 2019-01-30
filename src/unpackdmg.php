@@ -5,7 +5,7 @@
 
 require_once( __DIR__ . '/../vendor/autoload.php' );
 class UnpackDMG {
-  public $version = "1.0.0"; // TODO: obtain via composer
+  public $version = "1.0.1"; // TODO: obtain via composer
   public $climate = NULL;
   public $mountName = NULL;
   public $folderName = NULL;
@@ -93,17 +93,13 @@ class UnpackDMG {
   }
 
   /**
-   * Copy a file, or recursively copy a folder and its contents (adapted from Aidan Lister)
-   * 
-   * @author      Aidan Lister <aidan@php.net>
-   * @version     1.0.1
-   * @link        http://aidanlister.com/2004/04/recursively-copying-directories-in-php/
+   * Copy a file, or recursively copy a folder and its contents while
+   * preserving original permissions (adapted from Aidan Lister)
    * @param       string   $source    Source path
    * @param       string   $dest      Destination path
-   * @param       int      $permissions New folder creation permissions
    * @return      bool     Returns true on success, false on failure
    */
-  function xcopy($source, $dest, $permissions = 0755) {
+  function xcopy($source, $dest) {
     if (! $this->climate->arguments->defined('quiet')) {
       echo "Copying $source to $dest\n";
     }
@@ -115,12 +111,12 @@ class UnpackDMG {
 
     // Simple copy for a file
     if (is_file($source)) {
-        return copy($source, $dest);
+      return copy($source, $dest) && chmod($dest, fileperms($source));
     }
 
     // Make destination directory
     if (!is_dir($dest)) {
-        mkdir($dest, $permissions);
+        mkdir($dest, fileperms($source));
     }
 
     // Loop through the folder
@@ -132,7 +128,7 @@ class UnpackDMG {
         }
 
         // Deep copy directories
-        $this->xcopy("$source/$entry", "$dest/$entry", $permissions);
+        $this->xcopy("$source/$entry", "$dest/$entry");
     }
 
     // Clean up
