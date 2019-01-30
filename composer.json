@@ -1,0 +1,20 @@
+{
+    "name": "steveorevo/unpackdmg",
+    "description": "UnpackDMG is a simple utility to unpack a macOS .dmg file to a directory.",
+    "require": {
+        "steveorevo/gstring": "^1.1",
+        "league/climate": "^3.4"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+          "name": "Stephen J. Carnam",
+          "email": "steve@steveorevo.com",
+          "homepage": "http://steveorevo.com",
+          "role": "developer"
+        }
+      ],
+    "autoload": {
+        "psr-4": {"Steveorevo\\": "src/"}
+    }
+}
